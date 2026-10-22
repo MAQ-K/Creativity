@@ -1,0 +1,61 @@
+/* Creativity — design tokens (source: design-system/tokens.json) */
+:root {
+  --bg-100: #fafaf8;
+  --bg-200: #eef2f4;
+  --surface-card: #e9eaeb;
+  --surface-white: #ffffff;
+  --ink: #17191c;
+  --ink-muted: #626970;
+  --ink-ghost: #a9aeb3;
+  --midnight: #081a35;
+  --midnight-hover: #12294d;
+  --primary: #003b5c;
+  --secondary: #8a8d92;
+  --sky: #a9cddd;
+  --sky-100: #dfeef4;
+  --border: #dde2e5;
+  --on-dark: #ffffff;
+  --on-dark-muted: #b9c3cf;
+  --tint-steel: #e7edf2;
+  --tint-glass: #e3eef3;
+  --tint-concrete: #eeede9;
+  --tint-roads: #ecebe8;
+  --tint-landscape: #e8efea;
+  --tint-industrial: #e9ecef;
+  --tint-epoxy: #f1eee6;
+  --tint-interior: #f0ece7;
+  --shadow-soft: 0 1px 2px rgba(8,26,53,0.04), 0 12px 32px rgba(8,26,53,0.06);
+  --shadow-lift: 0 2px 4px rgba(8,26,53,0.05), 0 24px 48px rgba(8,26,53,0.10);
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+  --space-16: 128px;
+  --little-border-radius: 5px;
+  --radius-image: 6px;
+  --radius-card: 8px;
+  --content-max: 1280px;
+  --gutter-desktop: 64px;
+  --gutter-mobile: 20px;
+  --nav-height: 76px;
+  --control-height: 50px;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@font-face { font-family: 'Helvetica Neue'; src: url('../fonts/HelveticaNeueLight.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Helvetica Neue'; src: url('../fonts/HelveticaNeueRoman.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Helvetica Neue'; src: url('../fonts/HelveticaNeueMedium.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+
+.t-hero { font-family: var(--font-sans); font-size: 84px; line-height: 1.02; font-weight: 500; letter-spacing: -0.035em; }
+.t-section { font-family: var(--font-sans); font-size: 52px; line-height: 1.06; font-weight: 500; letter-spacing: -0.028em; }
+.t-statement { font-family: var(--font-sans); font-size: 40px; line-height: 1.18; font-weight: 400; letter-spacing: -0.022em; }
+.t-stat { font-family: var(--font-sans); font-size: 64px; line-height: 1.0; font-weight: 400; letter-spacing: -0.04em; }
+.t-card-title { font-family: var(--font-sans); font-size: 26px; line-height: 1.18; font-weight: 500; letter-spacing: -0.015em; }
+.t-body-lg { font-family: var(--font-sans); font-size: 18px; line-height: 1.6; font-weight: 400; letter-spacing: 0; }
+.t-body { font-family: var(--font-sans); font-size: 16px; line-height: 1.6; font-weight: 400; letter-spacing: 0; }
+.t-button { font-family: var(--font-sans); font-size: 15px; line-height: 1.0; font-weight: 500; letter-spacing: 0; }
+.t-label { font-family: var(--font-sans); font-size: 12px; line-height: 1.3; font-weight: 500; letter-spacing: 0.12em; }
+.t-caption { font-family: var(--font-sans); font-size: 13px; line-height: 1.45; font-weight: 400; letter-spacing: 0.01em; }
