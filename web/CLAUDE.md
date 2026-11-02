@@ -1,6 +1,8 @@
 # Creativity Touches for Contracting — website
 
-Marketing site for Creativity Touches for Contracting (لمسات الإبداع العالمية للمقاولات), a general contractor in Riyadh. Contact: info@ictc.site · www.ictc.site.
+**The live site's source is `../server uploaded version/`. Make all site edits there; this `web/` folder is an older copy, kept for these docs, the design system and `services-kit.html`. Bump the `?v=` on css/js links whenever those files change.**
+
+Marketing site for Creativity Touches for Contracting (لمسات الإبداع العالمية للمقاولات), a general contractor in Riyadh. Contact: ctc@creativitytouches.com.
 
 The homepage is designed and built as static HTML/CSS/JS. Treat it as the reference implementation: keep its look, spacing and motion exactly when you extend it or port it to a framework.
 
@@ -8,6 +10,11 @@ The homepage is designed and built as static HTML/CSS/JS. Treat it as the refere
 
 ```
 index.html                 Homepage (all sections, in order)
+about.html                 About page
+services.html              Services hub, linked from the nav on every page except the homepage (there Services scrolls to its section)
+building-contracting.html, industrial-buildings.html, roads.html, industrial-flooring.html, concrete-repair.html, sports-courts.html, interior-landscaping.html
+                           One page per service: hero, service component, gallery, related services, closing CTA
+services-kit.html          Internal reference for the service components (noindex, not linked)
 content.md                 Source of truth for page copy (Arabic). English in index.html is translated from it; ar.js uses it verbatim
 css/tokens.css             Design tokens as CSS variables + type classes (.t-hero, .t-section …) + @font-face
 css/styles.css             All component styles, prefixed ct- (buttons, nav, hero, services, bento, projects, contact …)
@@ -47,4 +54,5 @@ Run it: open `index.html` through any static server (`npx serve .` or `python -m
 - Partners grid shows supplier names as text; replace with client logos when supplied.
 - WhatsApp button links to the placeholder `https://wa.me/9665XXXXXXXX` in index.html — put in the real number.
 - Arabic copy in `js/ar.js` is a first draft; have a native speaker review it. Arabic falls back to system fonts — license Helvetica Neue Arabic for a matching look.
-- Next pages to build from the same system: About, Services (one page per service), Projects (list + detail), Contact.
+- Next pages to build from the same system: Projects (list + detail), Contact.
+- The document's "خدمات الترميم" (restoration) section is a copy of the flooring text, so it has no page yet; add one when real copy arrives.

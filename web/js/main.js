@@ -28,6 +28,20 @@
     words.push(el);
   });
 
+  /* Title words rise out of a mask; keeps the authored line breaks */
+  var rises = Array.prototype.slice.call(document.querySelectorAll('[data-rise]'));
+  function splitRise(el, text) {
+    var i = 0;
+    el.setAttribute('aria-label', text.replace(/\s+/g, ' '));
+    el.innerHTML = text.split('\n').map(function (line) {
+      return '<span class="ct-rise__line" aria-hidden="true">' + line.trim().split(/\s+/).map(function (w) { return '<span class="ct-rise__w"><i style="--i:' + i++ + '">' + w + '</i></span>'; }).join(' ') + '</span>';
+    }).join('');
+  }
+  rises.forEach(function (el) { el._src = el.textContent.trim(); splitRise(el, el._src); });
+
+  /* Card icons draw themselves in (see .ct-belief__icon in styles.css) */
+  document.querySelectorAll('.ct-belief__icon svg > *').forEach(function (s) { s.setAttribute('pathLength', '1'); s.classList.add('is-draw'); });
+
   /* Parallax */
   var px = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]'));
   var nav = document.querySelector('[data-nav]'), progress = document.querySelector('[data-progress]');
@@ -35,7 +49,7 @@
   function frame() {
     ticking = false;
     var vh = viewH(), st = scrollTop();
-    nav.classList.toggle('is-solid', st > vh * 0.6);
+    nav.classList.toggle('is-solid', st > (nav.classList.contains('ct-nav--on-light') ? 8 : vh * 0.6));
     var max = (useInner ? page.scrollHeight : root.scrollHeight) - vh;
     progress.style.transform = 'scaleX(' + (max > 0 ? st / max : 0).toFixed(4) + ')';
     if (reduce) { words.forEach(function (el) { el.querySelectorAll('.w').forEach(function (w) { w.classList.add('is-on'); }); }); return; }
@@ -43,7 +57,9 @@
     px.forEach(function (el) {
       var r = el.parentElement.getBoundingClientRect();
       var c = (r.top - top0 + r.height / 2) - vh / 2;
-      el.style.transform = 'translate3d(0,' + (-c * parseFloat(el.dataset.parallax)).toFixed(1) + 'px,0)';
+      var shift = -c * parseFloat(el.dataset.parallax), room = (el.offsetHeight - r.height) / 2;
+      if (room > 0) shift = Math.max(-room, Math.min(room, shift)); // a photo never slides past its overscan and exposes a gap
+      el.style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)';
     });
     words.forEach(function (el) {
       var r = el.getBoundingClientRect(), y = r.top - top0;
@@ -84,11 +100,12 @@
 
   /* Services carousel — icon, tint and counter follow the active card */
   var sec = document.querySelector('[data-services]');
+  var index = 0, go = function () {}, drawPath = function () {};
+  if (sec) {
   var track = sec.querySelector('[data-track]'), cards = Array.prototype.slice.call(track.children);
   var icons = sec.querySelectorAll('[data-icons] svg'), dotsWrap = sec.querySelector('[data-dots]');
   var live = sec.querySelector('[data-live]'), countEl = sec.querySelector('[data-count]'), nameEl = sec.querySelector('[data-name]');
   var prev = sec.querySelector('[data-dir="prev"]'), next = sec.querySelector('[data-dir="next"]');
-  var index = 0;
   cards.forEach(function (c, i) {
     var b = document.createElement('button'); b.type = 'button';
     b.addEventListener('click', function () { go(i); });
@@ -96,7 +113,7 @@
     c.addEventListener('click', function (e) { if (i !== index) { e.preventDefault(); go(i); } });
   });
   var dots = dotsWrap.children;
-  function go(i, silent) {
+  go = function (i, silent) {
     index = Math.max(0, Math.min(cards.length - 1, i));
     var vp = track.parentElement.clientWidth, card = cards[index];
     var offset = Math.min(56, (vp - card.offsetWidth) / 2);
@@ -111,7 +128,7 @@
     countEl.textContent = String(index + 1).padStart(2, '0'); nameEl.textContent = name;
     prev.disabled = index === 0; next.disabled = index === cards.length - 1;
     if (!silent) live.textContent = (ar ? 'الخدمة ' + (index + 1) + ' من ' : 'Service ' + (index + 1) + ' of ') + cards.length + ': ' + name;
-  }
+  };
   prev.addEventListener('click', function () { go(index - 1); });
   next.addEventListener('click', function () { go(index + 1); });
   sec.querySelector('[data-carousel]').addEventListener('keydown', function (e) { var fwd = ar ? 'ArrowLeft' : 'ArrowRight', back = ar ? 'ArrowRight' : 'ArrowLeft'; if (e.key === fwd) go(index + 1); if (e.key === back) go(index - 1); });
@@ -121,12 +138,15 @@
   window.addEventListener('pointermove', function (e) { if (sx === null) return; track.style.transform = 'translate3d(' + (base + (e.clientX - sx)) + 'px,0,0)'; });
   window.addEventListener('pointerup', function (e) { if (sx === null) return; var dx = e.clientX - sx; sx = null; track.classList.remove('is-dragging'); if (Math.abs(dx) > 50) go(index + ((dx < 0) !== ar ? 1 : -1)); else go(index, true); });
   go(0, true);
+  }
 
   /* Process connectors: curved dashed arrows between alternating steps.
      Each arrow is its own <g>: a solid line draws in on entry, then hands over to the flowing dashed line. */
-  var stepsEl = document.querySelector('[data-steps]'), svg = stepsEl.querySelector('[data-path]');
+  var stepsEl = document.querySelector('[data-steps]');
+  if (stepsEl) {
+  var svg = stepsEl.querySelector('[data-path]');
   var stepEls = stepsEl.querySelectorAll('.ct-step'), cur = -1;
-  function drawPath() {
+  drawPath = function () {
     // layout boxes (offset*), not getBoundingClientRect, so the 20px reveal rise doesn't shift the arrows
     var steps = stepEls, o = { left: 0, top: 0 }, out = '';
     var box = function (s) { return { left: s.offsetLeft, top: s.offsetTop, width: s.offsetWidth, height: s.offsetHeight, right: s.offsetLeft + s.offsetWidth, bottom: s.offsetTop + s.offsetHeight }; };
@@ -142,7 +162,7 @@
              '<path class="flow" d="' + d + '"/><path class="arrow" d="' + head + '"/></g>';
     }
     svg.innerHTML = out;
-  }
+  };
   drawPath();
 
   /* Process sequence: steps rise in, arrows draw one by one, then a highlight walks the steps while in view */
@@ -163,6 +183,7 @@
       } else { clearInterval(walk); walk = null; highlight(-1); }
     });
   }, { root: useInner ? page : null, threshold: 0.35 }).observe(stepsEl);
+  }
 
   /* Count-up on the stats band */
   var cio = new IntersectionObserver(function (entries) {
@@ -188,6 +209,7 @@
     root.lang = lang; root.dir = ar ? 'rtl' : 'ltr';
     strings.forEach(function (s) { var v = ar ? AR[s.key] : s.key; if (s.attr) s.node.setAttribute(s.attr, v); else s.node.nodeValue = s.raw.replace(s.key, v); });
     words.forEach(function (el) { splitWords(el, ar ? AR[el._src] || el._src : el._src); });
+    rises.forEach(function (el) { splitRise(el, ar ? AR[el._src] || el._src : el._src); });
     langBtn.textContent = ar ? 'EN' : 'ع';
     langBtn.lang = ar ? 'en' : 'ar';
     langBtn.setAttribute('aria-label', ar ? 'English' : 'العربية');
